@@ -10,11 +10,12 @@ public interface IBEAApiService
 {
 
 	@GET("/data")
-	Results getDataResults(
+	Results getResults(
 			@Query("UserID") String userID,
 			@Query("method") String method,
 			@Query("datasetname") String datasetname,
 			@Query("KeyCode") String keyCode,
+			@Query("GeoFips") String geoFips,
 			@Query("ResultFormat") String resultFormat);
 	
 	@GET("/data")

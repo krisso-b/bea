@@ -17,5 +17,11 @@ public final class BeaConstants {
 	public static final String DESCRIPTION = "Description";
 	public static final String PARAMETERNAME = "ParameterName";
 	public static final String PARAMETERVALUE = "ParameterValue";
-	
+	public static final String KEY_CODE_WITH_S = "_S";
+	public static final String KEY_CODE_WITH_Q = "_Q";
+	public static final String KEY_CODE_WITH_C = "_C";
+	public static final String KEY_CODE_WITH_M = "_M";
+	public static final String GEO_FIPS_STATE = "STATE";
+	public static final String GEO_FIPS_COUNTY = "COUNTY";
+	public static final String GEO_FIPS_MSA = "MSA";
 }

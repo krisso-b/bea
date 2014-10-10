@@ -14,6 +14,7 @@ import retrofit.converter.GsonConverter;
 import com.bea.api.definition.IBEAApiService;
 import com.bea.api.objects.KeyCode;
 import com.bea.api.objects.Results;
+import com.bea.constants.BeaConstants;
 import com.bea.deserializers.ResultsDeserializer;
 import com.bea.deserializers.KeyCodeCollectionDeserializer;
 import com.bea.helpers.KeyCodeCollection;
@@ -100,7 +101,9 @@ public class BeaService
 		Results results = null;
 		try
 		{
-			results = service.getDataResults(apiKey, method, datasetname, keyCode, resultFormat);
+			String geoFips = getGeoFips(keyCode);
+			
+			results = service.getResults(apiKey, method, datasetname, keyCode, geoFips, resultFormat);
 		}
 		catch (Exception e)
 		{
@@ -134,5 +137,19 @@ public class BeaService
 			throw e;
 		}
 		return keyCodeCollection.getKeyCodeList();
+	}
+	
+	private String getGeoFips(final String keyCode){
+		String geoFips = null;
+		
+		if(keyCode.indexOf(BeaConstants.KEY_CODE_WITH_S) > -1 || keyCode.indexOf(BeaConstants.KEY_CODE_WITH_Q) > -1){
+			geoFips = BeaConstants.GEO_FIPS_STATE;
+		}else if(keyCode.indexOf(BeaConstants.KEY_CODE_WITH_C) > -1){
+			geoFips = BeaConstants.GEO_FIPS_COUNTY;
+		}else if(keyCode.indexOf(BeaConstants.KEY_CODE_WITH_M) > -1){
+			geoFips = BeaConstants.GEO_FIPS_MSA;
+		}
+		
+		return geoFips;
 	}
 }
