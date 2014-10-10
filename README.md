@@ -1,32 +1,48 @@
-Freddie
+BEA
 ------
-The unofficial [St. Louis Fed FRED API](http://api.stlouisfed.org/docs/fred/) Java Wrapper
+The unofficial [BEA API](http://www.bea.gov/api/) Java Wrapper
 
-[Get a valid API key](http://api.stlouisfed.org/api_key.html) 
-```java
-String apiKey = "51ff1f1844537b524db28bddc9de4d44";
-String seriesId = "M08175USM144NNBR";
-Freddie freddie = new Freddie(apiKey);
+	String userID = "12599C10-6F87-44D2-8904-91FED7D6F77D";
+		String method = "GetData";
+		String datasetname = "RegionalData";
+		String keyCode = "GDP_SP";
+		String resultFormat = RETURNTYPE;
+		try
+		{
+			BeaService bea = new BeaService(userID, null, null);
+			Results results = bea.getResults(method, datasetname, keyCode, resultFormat);
+			
+			System.out.println("KeyCode:" + results.getKeyCode());
+			
+			for(RequestParam requestParam:results.getRequestParam()){
+				System.out.println(requestParam.getParameterName()+":"+requestParam.getParameterValue());
+			}
 
-/*
- * This series will not be populated with observation data.
- * However, it will contain all the series' metadata.
- */
-Series series = freddie.getSeriesById(seriesId, false);
-assert (series.getData() == null);
+			for (Dimension dimension : results.getDimensons())
+			{
+				System.out.println(dimension.getOrdinal() + ":" + dimension.getName());
+			}
 
-/*
- * This one will contain both actual observational data and metadata.
- */
-Series seriesWithData = freddie.getSeriesById(seriesId, true);
+			for (Data data : results.getData())
+			{
+				System.out.println(data.getGeoFips() + ":" + data.getGeoName() + ":" + data.getCode() + ":"
+						+ data.getTimePeriod() + ":" + data.getClUnit() + ":" + data.getUnitMult() + ":" + data.getDataValue()
+						+ ":" + data.getAsOfDate() + ":" + data.getObservedValue());
+			}
+			
+			// Get the list of 'keyCode's
+			String methodGetParameterValues = "GetParameterValues";
+			String parameterName = "keycode";
 
-for (Observation o : seriesWithData.getData())
-{
-	System.out.println(seriesWithData.getId() + " Date: " + o.getDate() + " ----- " + o.getValue());
-}
-```
-
-The following FRED API objects are currently mapped to pojos:
-* Series
-* Category
-* Release
+			List<KeyCode> keyCodeList = bea.getKeyCodesList(methodGetParameterValues, datasetname, parameterName, resultFormat);
+			
+			for(KeyCode keyCodeObj:keyCodeList)
+			{
+				System.out.println(keyCodeObj.getKeyCode() +":" + keyCodeObj.getDescription());
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
