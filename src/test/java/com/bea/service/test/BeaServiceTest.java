@@ -1,22 +1,19 @@
 package com.bea.service.test;
 
-import java.util.List;
-
+import com.bea.api.objects.KeyCode;
+import com.bea.api.objects.Results;
+import com.bea.service.BeaService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.bea.api.objects.KeyCode;
-import com.bea.api.objects.Results;
-import com.bea.service.BeaService;
+import java.util.List;
 
 public class BeaServiceTest {
-	BeaService beaService = null;
+	private static BeaService beaService = new BeaService("someApiKey", null, 12);
 
 	@Before
 	public void setUp() throws Exception {
-		String apiKey = "12599C10-6F87-44D2-8904-91FED7D6F77D";
-		beaService = new BeaService(apiKey, null, null);
 	}
 
 	@Test
@@ -28,15 +25,20 @@ public class BeaServiceTest {
 
 		Results results = beaService.getResults(method, datasetname, keyCode,
 				resultFormat);
+
+		testGetKeyCodesList();
+
 		Assert.assertNotNull(results);
 		Assert.assertEquals("GDP in current dollars", results.getStatistic());
 		Assert.assertEquals("GDP_SP", results.getKeyCode());
-		Assert.assertNotNull(results.getRequestParam());		
+		Assert.assertNotNull(results.getRequestParam());
 		Assert.assertFalse(results.getRequestParam().isEmpty());
 		Assert.assertNotNull(results.getDimensons());
 		Assert.assertFalse(results.getDimensons().isEmpty());
 		Assert.assertNotNull(results.getData());
 		Assert.assertFalse(results.getData().isEmpty());
+		System.out.println("done");
+
 	}
 
 	@Test

@@ -16,7 +16,7 @@ public interface IBEAApiService
 			@Query("datasetname") String datasetname,
 			@Query("KeyCode") String keyCode,
 			@Query("GeoFips") String geoFips,
-			@Query("ResultFormat") String resultFormat);
+			@Query("ResultFormat") String resultFormat) throws Exception;
 	
 	@GET("/data")
 	KeyCodeCollection getKeyCodes(
