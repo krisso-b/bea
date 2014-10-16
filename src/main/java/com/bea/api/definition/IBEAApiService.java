@@ -9,16 +9,16 @@ import com.bea.helpers.KeyCodeCollection;
 public interface IBEAApiService
 {
 
-	@GET("/data")
+	@GET("/data/")
 	Results getResults(
 			@Query("UserID") String userID,
 			@Query("method") String method,
 			@Query("datasetname") String datasetname,
 			@Query("KeyCode") String keyCode,
 			@Query("GeoFips") String geoFips,
-			@Query("ResultFormat") String resultFormat);
+			@Query("ResultFormat") String resultFormat) throws Exception;
 	
-	@GET("/data")
+	@GET("/data/")
 	KeyCodeCollection getKeyCodes(
 			@Query("UserID") String userID,
 			@Query("method") String method,

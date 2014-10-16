@@ -1,27 +1,27 @@
 package com.bea.service;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import retrofit.RestAdapter;
-import retrofit.RestAdapter.LogLevel;
-import retrofit.converter.GsonConverter;
-
 import com.bea.api.definition.IBEAApiService;
 import com.bea.api.objects.KeyCode;
 import com.bea.api.objects.Results;
 import com.bea.constants.BeaConstants;
-import com.bea.deserializers.ResultsDeserializer;
 import com.bea.deserializers.KeyCodeCollectionDeserializer;
+import com.bea.deserializers.ResultsDeserializer;
 import com.bea.helpers.KeyCodeCollection;
 import com.google.common.util.concurrent.RateLimiter;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.squareup.okhttp.ConnectionPool;
+import com.squareup.okhttp.OkHttpClient;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import retrofit.RestAdapter;
+import retrofit.RestAdapter.LogLevel;
+import retrofit.client.OkClient;
+import retrofit.converter.GsonConverter;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * @author pmurugesan
@@ -40,7 +40,7 @@ public class BeaService
 
 	private static RestAdapter restAdapter = null;
 	private static IBEAApiService service = null;
-	private final RateLimiter rateLimiter;
+
 	final static String ENDPOINT = "http://www.bea.gov/api/";
 
 
@@ -51,7 +51,7 @@ public class BeaService
 
 	public BeaService(String apiKey, @Nullable String optEndPoint)
 	{
-		this(apiKey, optEndPoint, 2);
+		this(apiKey, optEndPoint, 300);
 	}
 
 	public BeaService(String apiKey, @Nullable String optEndPoint, double requestsPerMinute)
@@ -63,11 +63,7 @@ public class BeaService
 	{
 		if (rateLimiter == null)
 		{
-			this.rateLimiter = RateLimiter.create(Double.MAX_VALUE);
-		}
-		else
-		{
-			this.rateLimiter = rateLimiter;
+			rateLimiter = RateLimiter.create(Double.MAX_VALUE);
 		}
 
 		this.apiKey = apiKey;
@@ -79,8 +75,12 @@ public class BeaService
 		{
 			this.endPoint = ENDPOINT;
 		}
+
+		OkHttpClient client = new OkHttpClient();
+		client.setConnectionPool(new ConnectionPool(0, 5 * 60 * 1000));
+
 		restAdapter =
-				new RestAdapter.Builder().setEndpoint(endPoint).setLogLevel(LogLevel.NONE).setConverter(new GsonConverter(gson))
+				new RestAdapter.Builder().setClient(new OkClient(client)).setEndpoint(endPoint).setRequestInterceptor(new HttpRequestLimiter(rateLimiter)).setLogLevel(LogLevel.NONE).setErrorHandler(new RetrofitErrorHandler()).setConverter(new GsonConverter(gson))
 						.build();
 		service = restAdapter.create(IBEAApiService.class);
 	}
@@ -96,8 +96,6 @@ public class BeaService
 	 */
 	public Results getResults(String method, String datasetname, String keyCode, String resultFormat) throws Exception
 	{
-		rateLimiter.acquire();
-
 		Results results = null;
 		try
 		{
@@ -124,8 +122,6 @@ public class BeaService
 	 */
 	public List<KeyCode> getKeyCodesList(String method, String datasetname, String parameterName, String resultFormat) throws Exception
 	{
-		rateLimiter.acquire();
-
 		KeyCodeCollection keyCodeCollection = null;
 		try
 		{
