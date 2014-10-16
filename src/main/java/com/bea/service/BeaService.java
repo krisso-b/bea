@@ -11,10 +11,13 @@ import com.google.common.util.concurrent.RateLimiter;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.squareup.okhttp.ConnectionPool;
+import com.squareup.okhttp.OkHttpClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import retrofit.RestAdapter;
 import retrofit.RestAdapter.LogLevel;
+import retrofit.client.OkClient;
 import retrofit.converter.GsonConverter;
 
 import javax.annotation.Nullable;
@@ -48,7 +51,7 @@ public class BeaService
 
 	public BeaService(String apiKey, @Nullable String optEndPoint)
 	{
-		this(apiKey, optEndPoint, 10);
+		this(apiKey, optEndPoint, 300);
 	}
 
 	public BeaService(String apiKey, @Nullable String optEndPoint, double requestsPerMinute)
@@ -73,8 +76,11 @@ public class BeaService
 			this.endPoint = ENDPOINT;
 		}
 
+		OkHttpClient client = new OkHttpClient();
+		client.setConnectionPool(new ConnectionPool(0, 5 * 60 * 1000));
+
 		restAdapter =
-				new RestAdapter.Builder().setEndpoint(endPoint).setRequestInterceptor(new HttpRequestLimiter(rateLimiter)).setLogLevel(LogLevel.NONE).setErrorHandler(new RetrofitErrorHandler()).setConverter(new GsonConverter(gson))
+				new RestAdapter.Builder().setClient(new OkClient(client)).setEndpoint(endPoint).setRequestInterceptor(new HttpRequestLimiter(rateLimiter)).setLogLevel(LogLevel.NONE).setErrorHandler(new RetrofitErrorHandler()).setConverter(new GsonConverter(gson))
 						.build();
 		service = restAdapter.create(IBEAApiService.class);
 	}

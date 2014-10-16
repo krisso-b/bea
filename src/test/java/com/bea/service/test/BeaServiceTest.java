@@ -10,7 +10,7 @@ import org.junit.Test;
 import java.util.List;
 
 public class BeaServiceTest {
-	private static BeaService beaService = new BeaService("someApiKey", null, 12);
+	private static BeaService beaService = new BeaService("someApiKey", null, 300);
 
 	@Before
 	public void setUp() throws Exception {
@@ -18,26 +18,28 @@ public class BeaServiceTest {
 
 	@Test
 	public void testGetResults() throws Exception {
-		String method = "GetData";
-		String datasetname = "RegionalData";
-		String keyCode = "GDP_SP";
-		String resultFormat = "json";
+		for (int i = 0; i < 10; i++)
+		{
+			String method = "GetData";
+			String datasetname = "RegionalData";
+			String keyCode = "GDP_SP";
+			String resultFormat = "json";
 
-		Results results = beaService.getResults(method, datasetname, keyCode,
-				resultFormat);
+			Results results = beaService.getResults(method, datasetname, keyCode,
+					resultFormat);
 
-		testGetKeyCodesList();
+			Assert.assertNotNull(results);
+			Assert.assertEquals("GDP in current dollars", results.getStatistic());
+			Assert.assertEquals("GDP_SP", results.getKeyCode());
+			Assert.assertNotNull(results.getRequestParam());
+			Assert.assertFalse(results.getRequestParam().isEmpty());
+			Assert.assertNotNull(results.getDimensons());
+			Assert.assertFalse(results.getDimensons().isEmpty());
+			Assert.assertNotNull(results.getData());
+			Assert.assertFalse(results.getData().isEmpty());
+			System.out.println("done");
+		}
 
-		Assert.assertNotNull(results);
-		Assert.assertEquals("GDP in current dollars", results.getStatistic());
-		Assert.assertEquals("GDP_SP", results.getKeyCode());
-		Assert.assertNotNull(results.getRequestParam());
-		Assert.assertFalse(results.getRequestParam().isEmpty());
-		Assert.assertNotNull(results.getDimensons());
-		Assert.assertFalse(results.getDimensons().isEmpty());
-		Assert.assertNotNull(results.getData());
-		Assert.assertFalse(results.getData().isEmpty());
-		System.out.println("done");
 
 	}
 
