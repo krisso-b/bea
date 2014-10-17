@@ -12,17 +12,17 @@ public interface IBEAApiService
 	@GET("/data/")
 	Results getResults(
 			@Query("UserID") String userID,
-			@Query("method") String method,
-			@Query("datasetname") String datasetname,
 			@Query("KeyCode") String keyCode,
 			@Query("GeoFips") String geoFips,
+			@Query("method") String method,
+			@Query("datasetname") String datasetName,
 			@Query("ResultFormat") String resultFormat) throws Exception;
 	
 	@GET("/data/")
 	KeyCodeCollection getKeyCodes(
 			@Query("UserID") String userID,
-			@Query("method") String method,
-			@Query("datasetname") String datasetname,
 			@Query("ParameterName") String parameterName,
+			@Query("method") String method,
+			@Query("datasetname") String datasetName,			
 			@Query("ResultFormat") String resultFormat);
 }

@@ -11,23 +11,22 @@ public class Data implements Serializable
 	 */
 	private static final long serialVersionUID = -4543566827710236378L;
 
-	private int geoFips;
+	private String geoFips;
 	private String geoName;
 	private String code;
 	private String timePeriod;
 	private Date asOfDate;
 	private String clUnit;
 	private int unitMult;
-	private int dataValue;
+	private Double dataValue;
 	private Double observedValue;
 
-	public int getGeoFips()
-	{
+
+	public String getGeoFips() {
 		return geoFips;
 	}
 
-	public void setGeoFips(int geoFips)
-	{
+	public void setGeoFips(String geoFips) {
 		this.geoFips = geoFips;
 	}
 
@@ -71,16 +70,6 @@ public class Data implements Serializable
 		this.asOfDate = asOfDate;
 	}
 
-	public int getDataValue()
-	{
-		return dataValue;
-	}
-
-	public void setDataValue(int dataValue)
-	{
-		this.dataValue = dataValue;
-	}
-
 	public Double getObservedValue()
 	{
 		return observedValue;
@@ -109,6 +98,14 @@ public class Data implements Serializable
 	public void setUnitMult(int unitMult)
 	{
 		this.unitMult = unitMult;
+	}
+
+	public Double getDataValue() {
+		return dataValue;
+	}
+
+	public void setDataValue(Double dataValue) {
+		this.dataValue = dataValue;
 	}
 
 

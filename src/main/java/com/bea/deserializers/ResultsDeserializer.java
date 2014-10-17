@@ -64,16 +64,17 @@ public class ResultsDeserializer implements JsonDeserializer<Results>
 			 * */
 			JsonObject jsonResultsObject = (JsonObject) beaAPIObject.get(BeaConstants.RESULTS);
 
-			String statistic = jsonResultsObject.get("Statistic").getAsString();
-			if (statistic == null)
+			Object statisticObj = jsonResultsObject.get(BeaConstants.RESULTS_STATISTIC);
+			if (statisticObj == null)
 			{
 				log.error("statistic is empty");
 				return null;
 			}
+			String statistic = jsonResultsObject.get(BeaConstants.RESULTS_STATISTIC).getAsString();
 			results.setStatistic(statistic);
-			results.setUnitOfMeasure(jsonResultsObject.get("UnitOfMeasure").getAsString());
-			results.setPublicTable(jsonResultsObject.get("PublicTable").getAsString());
-			results.setUTCProductionTime(jsonResultsObject.get("UTCProductionTime").getAsString());
+			results.setUnitOfMeasure(jsonResultsObject.get(BeaConstants.RESULTS_UNIT_OF_MEASURE).getAsString());
+			results.setPublicTable(jsonResultsObject.get(BeaConstants.RESULTS_PUBLICTABLE).getAsString());
+			results.setUTCProductionTime(jsonResultsObject.get(BeaConstants.RESULTS_UTC_PRODUCTION_TIME).getAsString());
 
 			JsonArray dimensionsObjectCollection = (JsonArray) jsonResultsObject.get(BeaConstants.DIMENSIONS);
 
@@ -82,10 +83,10 @@ public class ResultsDeserializer implements JsonDeserializer<Results>
 			{
 				JsonObject dimensionsObject = (JsonObject) dimensonObjectElement;
 				Dimension dimension = new Dimension();
-				dimension.setOrdinal(dimensionsObject.get("Ordinal").getAsInt());
-				dimension.setName(dimensionsObject.get("Name").getAsString());
-				dimension.setDataType(dimensionsObject.get("DataType").getAsString());
-				dimension.setIsValue(dimensionsObject.get("IsValue").getAsString());
+				dimension.setOrdinal(dimensionsObject.get(BeaConstants.DIMENSION_ORDINAL).getAsInt());
+				dimension.setName(dimensionsObject.get(BeaConstants.DIMENSION_NAME).getAsString());
+				dimension.setDataType(dimensionsObject.get(BeaConstants.DIMENSION_DATA_TYPE).getAsString());
+				dimension.setIsValue(dimensionsObject.get(BeaConstants.DIMENSION_IS_VALUE).getAsString());
 				dimensionsList.add(dimension);
 			}
 			results.setDimensons(dimensionsList);
@@ -94,21 +95,26 @@ public class ResultsDeserializer implements JsonDeserializer<Results>
 			/**
 			 * Creates 'Data' collection
 			 * */
-			JsonArray dataObjectCollection = (JsonArray) jsonResultsObject.get("Data");
+			JsonArray dataObjectCollection = (JsonArray) jsonResultsObject.get(BeaConstants.RESULTS_DATA);
 			List<Data> dataList = new ArrayList<>();
 			for (JsonElement dataObjectElement : dataObjectCollection)
 			{
 				JsonObject dataObject = (JsonObject) dataObjectElement;
 				Data data = new Data();
-				data.setGeoFips(dataObject.get("GeoFips").getAsInt());
-				data.setGeoName(dataObject.get("GeoName").getAsString());
-				data.setCode(dataObject.get("Code").getAsString());
+				data.setGeoFips(dataObject.get(BeaConstants.DATA_GEO_FIPS).getAsString());
+				data.setGeoName(dataObject.get(BeaConstants.DATA_GEO_NAME).getAsString());
+				data.setCode(dataObject.get(BeaConstants.DATA_CODE).getAsString());
 
 				SimpleDateFormat sdf = new SimpleDateFormat(BeaConstants.TIME_PERIOD_FORMAT);
 				try
 				{
-					String timePeriodYear = dataObject.get("TimePeriod").getAsString();
-					data.setTimePeriod(getTimePeriodDate(timePeriodYear));
+					String timePeriodYear = dataObject.get(BeaConstants.DATA_TIMEPERIOD).getAsString();
+					String timePeriodDate = getTimePeriodDate(timePeriodYear);
+					
+					if(timePeriodDate == null){
+						continue;
+					}					
+					data.setTimePeriod(timePeriodDate);
 
 					Date asOfDate = sdf.parse(data.getTimePeriod());
 					data.setAsOfDate(asOfDate);
@@ -119,13 +125,14 @@ public class ResultsDeserializer implements JsonDeserializer<Results>
 					return null;
 				}
 
-				data.setClUnit(dataObject.get("CL_UNIT").getAsString());
-				data.setUnitMult(dataObject.get("UNIT_MULT").getAsInt());
-				data.setDataValue(dataObject.get("DataValue").getAsInt());
-
-				data.setObservedValue(getObservedValue(data.getDataValue(), data.getUnitMult()));
-
-				dataList.add(data);
+				data.setClUnit(dataObject.get(BeaConstants.DATA_CL_UNIT).getAsString());
+				data.setUnitMult(dataObject.get(BeaConstants.DATA_UNIT_MULT).getAsInt());
+				
+				if(dataObject.get(BeaConstants.DATA_DATAVALUE) != null){
+					data.setDataValue(dataObject.get(BeaConstants.DATA_DATAVALUE).getAsDouble());
+					data.setObservedValue(getObservedValue(data.getDataValue(), data.getUnitMult()));
+					dataList.add(data);
+				}
 			}
 
 			results.setData(dataList);
@@ -139,34 +146,48 @@ public class ResultsDeserializer implements JsonDeserializer<Results>
 	}
 
 	public String getTimePeriodDate(String timePeriodYear)
-	{
+	{		
 		String timePeriodDate = null;
-		String timePeriodQuarter = timePeriodYear.substring(4);
+		String timePeriodQuarter = null;
+		String timePeriodYearSplit = null;
+		
+		if(timePeriodYear == null){
+			return null;
+		}
+		
+		if(!timePeriodYear.isEmpty() && timePeriodYear.length()>3){
+			
+			 timePeriodQuarter = timePeriodYear.substring(4);
+			 timePeriodYearSplit = timePeriodYear.substring(0, 4);
+		}else{
+			return null;
+		}
+		
 		String timePeridMMDD = null;
 
 		switch (timePeriodQuarter)
 		{
-			case "Q1":
+			case BeaConstants.TIME_PERIOD_Q1:
 				timePeridMMDD = BeaConstants.TIME_PERIOD_Q1_MM_DD;
 				break;
-			case "Q2":
+			case BeaConstants.TIME_PERIOD_Q2:
 				timePeridMMDD = BeaConstants.TIME_PERIOD_Q2_MM_DD;
 				break;
-			case "Q3":
+			case BeaConstants.TIME_PERIOD_Q3:
 				timePeridMMDD = BeaConstants.TIME_PERIOD_Q3_MM_DD;
 				break;
-			case "Q4":
+			case BeaConstants.TIME_PERIOD_Q4:
 				timePeridMMDD = BeaConstants.TIME_PERIOD_Q4_MM_DD;
 				break;
 			default:
 				timePeridMMDD = BeaConstants.TIME_PERIOD_Q4_MM_DD;
 				break;
 		}
-		timePeriodDate = timePeriodYear + timePeridMMDD;
+		timePeriodDate = timePeriodYearSplit + timePeridMMDD;
 		return timePeriodDate;
 	}
 
-	public Double getObservedValue(int dataValue, int unitMult)
+	public Double getObservedValue(double dataValue, int unitMult)
 	{
 
 		return dataValue * Math.pow(10, unitMult);

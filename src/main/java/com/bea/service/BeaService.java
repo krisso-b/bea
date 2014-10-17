@@ -85,23 +85,23 @@ public class BeaService
 		service = restAdapter.create(IBEAApiService.class);
 	}
 
-
+	
 	/**
-	 * @param method
-	 * @param datasetname
 	 * @param keyCode
+	 * @param method
+	 * @param datasetName
 	 * @param resultFormat
 	 * @return Results
 	 * @throws Exception
 	 */
-	public Results getResults(String method, String datasetname, String keyCode, String resultFormat) throws Exception
+	public Results getResults(String keyCode, String method, String datasetName,String resultFormat) throws Exception
 	{
 		Results results = null;
 		try
 		{
 			String geoFips = getGeoFips(keyCode);
 			
-			results = service.getResults(apiKey, method, datasetname, keyCode, geoFips, resultFormat);
+			results = service.getResults(apiKey, keyCode, geoFips, method, datasetName,  resultFormat);
 		}
 		catch (Exception e)
 		{
@@ -113,19 +113,19 @@ public class BeaService
 	
 	
 	/**
-	 * @param method
-	 * @param datasetname
 	 * @param parameterName
+	 * @param method
+	 * @param datasetName
 	 * @param resultFormat
 	 * @return List<KeyCode>
 	 * @throws Exception
 	 */
-	public List<KeyCode> getKeyCodesList(String method, String datasetname, String parameterName, String resultFormat) throws Exception
+	public List<KeyCode> getKeyCodesList(String parameterName, String method, String datasetName, String resultFormat) throws Exception
 	{
 		KeyCodeCollection keyCodeCollection = null;
 		try
 		{
-			keyCodeCollection = service.getKeyCodes(apiKey, method, datasetname, parameterName, resultFormat);
+			keyCodeCollection = service.getKeyCodes(apiKey, parameterName, method, datasetName, resultFormat);
 		}
 		catch (Exception e)
 		{

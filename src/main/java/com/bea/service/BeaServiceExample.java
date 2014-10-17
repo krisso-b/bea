@@ -22,8 +22,8 @@ public class BeaServiceExample
 		String resultFormat = RETURNTYPE;
 		try
 		{
-			BeaService bea = new BeaService(userID, null, null);
-			Results results = bea.getResults(method, datasetname, keyCode, resultFormat);
+			BeaService beaService = new BeaService(userID, null, null);
+			Results results = beaService.getResults(keyCode, method, datasetname,resultFormat);
 			
 			System.out.println("KeyCode:" + results.getKeyCode());
 			
@@ -47,7 +47,7 @@ public class BeaServiceExample
 			String methodGetParameterValues = "GetParameterValues";
 			String parameterName = "keycode";
 
-			List<KeyCode> keyCodeList = bea.getKeyCodesList(methodGetParameterValues, datasetname, parameterName, resultFormat);
+			List<KeyCode> keyCodeList = beaService.getKeyCodesList( parameterName, methodGetParameterValues, datasetname,resultFormat);
 			
 			for(KeyCode keyCodeObj:keyCodeList)
 			{
