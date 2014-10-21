@@ -1,10 +1,10 @@
-package com.bea.api.definition;
+package com.newoak.bea.api.definition;
 
 import retrofit.http.GET;
 import retrofit.http.Query;
 
-import com.bea.api.objects.Results;
-import com.bea.helpers.KeyCodeCollection;
+import com.newoak.bea.api.objects.Results;
+import com.newoak.bea.helpers.KeyCodeCollection;
 
 public interface IBEAApiService
 {

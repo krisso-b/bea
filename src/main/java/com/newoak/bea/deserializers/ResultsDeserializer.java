@@ -1,4 +1,4 @@
-package com.bea.deserializers;
+package com.newoak.bea.deserializers;
 
 import java.lang.reflect.Type;
 
@@ -10,11 +10,11 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.bea.api.objects.Data;
-import com.bea.api.objects.Dimension;
-import com.bea.api.objects.RequestParam;
-import com.bea.api.objects.Results;
-import com.bea.constants.BeaConstants;
+import com.newoak.bea.api.objects.Data;
+import com.newoak.bea.api.objects.Dimension;
+import com.newoak.bea.api.objects.RequestParam;
+import com.newoak.bea.api.objects.Results;
+import com.newoak.bea.constants.BeaConstants;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;

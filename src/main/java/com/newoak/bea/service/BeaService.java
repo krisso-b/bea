@@ -1,12 +1,12 @@
-package com.bea.service;
+package com.newoak.bea.service;
 
-import com.bea.api.definition.IBEAApiService;
-import com.bea.api.objects.KeyCode;
-import com.bea.api.objects.Results;
-import com.bea.constants.BeaConstants;
-import com.bea.deserializers.KeyCodeCollectionDeserializer;
-import com.bea.deserializers.ResultsDeserializer;
-import com.bea.helpers.KeyCodeCollection;
+import com.newoak.bea.api.definition.IBEAApiService;
+import com.newoak.bea.api.objects.KeyCode;
+import com.newoak.bea.api.objects.Results;
+import com.newoak.bea.constants.BeaConstants;
+import com.newoak.bea.deserializers.KeyCodeCollectionDeserializer;
+import com.newoak.bea.deserializers.ResultsDeserializer;
+import com.newoak.bea.helpers.KeyCodeCollection;
 import com.google.common.util.concurrent.RateLimiter;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;

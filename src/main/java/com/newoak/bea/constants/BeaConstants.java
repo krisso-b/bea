@@ -1,4 +1,4 @@
-package com.bea.constants;
+package com.newoak.bea.constants;
 
 public final class BeaConstants {
 

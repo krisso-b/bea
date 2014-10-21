@@ -1,4 +1,4 @@
-package com.bea.api.objects;
+package com.newoak.bea.api.objects;
 
 import java.io.Serializable;
 import java.util.Date;

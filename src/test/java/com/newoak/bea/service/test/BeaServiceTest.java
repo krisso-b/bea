@@ -1,8 +1,9 @@
-package com.bea.service.test;
+package com.newoak.bea.service.test;
 
-import com.bea.api.objects.KeyCode;
-import com.bea.api.objects.Results;
-import com.bea.service.BeaService;
+
+import com.newoak.bea.api.objects.KeyCode;
+import com.newoak.bea.api.objects.Results;
+import com.newoak.bea.service.BeaService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
