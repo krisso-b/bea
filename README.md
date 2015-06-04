@@ -9,8 +9,8 @@ The unofficial [BEA API](http://www.bea.gov/api/) Java Wrapper
 		String resultFormat = RETURNTYPE;
 		try
 		{
-			BeaService bea = new BeaService(userID, null, null);
-			Results results = bea.getResults(method, datasetname, keyCode, resultFormat);
+			BeaService beaService = new BeaService(userID, null, null);
+			Results results = beaService.getResults(method, datasetname, keyCode, resultFormat);
 			
 			System.out.println("KeyCode:" + results.getKeyCode());
 			
